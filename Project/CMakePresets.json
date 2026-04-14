@@ -1,11 +1,64 @@
 {
-    "version": 4,
+    "version": 3,
     "cmakeMinimumRequired": {
         "major": 3,
-        "minor": 23,
+        "minor": 26,
         "patch": 0
     },
-    "include": [
-        "user/cmake/engine/CMakePresets.json"
+    "configurePresets": [
+        {
+            "name": "release",
+            "displayName": "Release 2604",
+            "description": "Release 2604, unity, no tests.",
+            "generator": "Ninja",
+            "binaryDir": "${sourceDir}/build/release",
+            "cacheVariables": {
+                "CMAKE_BUILD_TYPE": "Release",
+                "LY_DISABLE_TEST_MODULES": "ON",
+                "LY_UNITY_BUILD": "ON",
+                "LY_STRIP_DEBUG_SYMBOLS": "ON"
+            }
+        },
+        {
+            "name": "development",
+            "displayName": "Development",
+            "description": "Profile, non-unity, with tests; meant for development.",
+            "generator": "Ninja",
+            "binaryDir": "${sourceDir}/build/dev",
+            "cacheVariables": {
+                "CMAKE_BUILD_TYPE": "Profile",
+                "LY_DISABLE_TEST_MODULES": "OFF",
+                "LY_UNITY_BUILD": "OFF",
+                "LY_STRIP_DEBUG_SYMBOLS": "OFF"
+            }
+        }
+    ],
+    "buildPresets": [
+        {
+            "name": "build-release",
+            "configurePreset": "release",
+            "description": "Build all targets using the profile preset.",
+            "targets": [
+                "all"
+            ]
+        },
+        {
+            "name": "build-all",
+            "configurePreset": "development",
+            "description": "Build all targets using the profile preset.",
+            "targets": [
+                "all"
+            ]
+        },
+        {
+            "name": "build-some",
+            "configurePreset": "development",
+            "description": "Build only necessary targets.",
+            "targets": [
+                "TestROSRolling",
+                "TestROSRolling.GameLauncher",
+                "TestROSRolling.Assets"
+            ]
+        }
     ]
 }

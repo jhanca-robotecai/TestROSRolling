@@ -1,0 +1,76 @@
+# Copyright (c) Contributors to the Open 3D Engine Project.
+# For complete copyright and license terms please see the LICENSE at the root of this distribution.
+#
+# SPDX-License-Identifier: Apache-2.0 OR MIT
+#
+
+FROM ros:rolling
+
+ENV WORKSPACE=/data/workspace
+
+WORKDIR $WORKSPACE
+
+ENV LANG=en_US.UTF-8
+
+# Setup time zone and locale data (necessary for SSL and HTTPS packages)
+RUN apt-get update \
+    && DEBIAN_FRONTEND="noninteractive" apt-get -y install tzdata locales keyboard-configuration curl \
+    && sed -i -e 's/# en_US.UTF-8 UTF-8/en_US.UTF-8 UTF-8/' /etc/locale.gen \
+    && dpkg-reconfigure --frontend=noninteractive locales \
+    && update-locale LANG=en_US.UTF-8 \
+    && sh -c 'echo "deb [arch=amd64,arm64] http://repo.ros2.org/ubuntu/main `lsb_release -cs` main" > /etc/apt/sources.list.d/ros2-latest.list' \
+    && curl -s https://raw.githubusercontent.com/ros/rosdistro/master/ros.asc | sudo apt-key add - \
+    && rm -rf /var/lib/apt/lists/*
+
+# Install the required ubuntu packages
+RUN apt-get update \
+    && apt-get install -y \
+    binutils \
+    clang \
+    cmake \
+    git \
+    git-lfs \
+    libglu1-mesa-dev \
+    libxcb-xinerama0 \
+    libfontconfig1-dev \
+    libnvidia-gl-470 \
+    libxcb-xkb-dev \
+    libxkbcommon-x11-dev \
+    libxkbcommon-dev \
+    libxcb-xfixes0-dev \
+    libxcb-xinput-dev \
+    libxcb-xinput0 \
+    libpcre2-16-0 \
+    libunwind-dev \
+    ninja-build \
+    python3-pip \
+    software-properties-common \
+    ros-rolling-ackermann-msgs \
+    ros-rolling-control-toolbox \
+    ros-rolling-xacro \
+    ros-rolling-vision-msgs \
+    ros-rolling-cyclonedds \
+    ros-rolling-rmw-cyclonedds-cpp \
+    ros-rolling-controller-manager
+
+ENV RMW_IMPLEMENTATION=rmw_cyclonedds_cpp
+
+# Install O3DE from pre-downloaded .deb package
+# Place tmp/o3de_latest.deb in the repo root before building (see README for download URL)
+COPY tmp/o3de_latest.deb /tmp/o3de_latest.deb
+RUN apt-get update \
+    && apt-get install -y /tmp/o3de_latest.deb \
+    && rm /tmp/o3de_latest.deb \
+    && rm -rf /var/lib/apt/lists/*
+
+# Bootstrap O3DE Python, then register the engine
+RUN /opt/O3DE/26.05/python/get_python.sh \
+    && /opt/O3DE/26.05/scripts/o3de.sh register --this-engine
+
+# Install build script
+COPY Docker/build_project.sh /usr/local/bin/build_project.sh
+RUN chmod +x /usr/local/bin/build_project.sh
+
+ENV NVIDIA_VISIBLE_DEVICES=all
+ENV NVIDIA_DRIVER_CAPABILITIES=all
+ENTRYPOINT ["/bin/bash", "-c"]

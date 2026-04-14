@@ -1,0 +1,22 @@
+services:
+  simulation:
+    build:
+      context: .
+      dockerfile: Docker/Dockerfile.O3DE
+    volumes:
+      - ./Project:/data/workspace/Project
+      - ./o3de:/data/workspace/o3de
+      - ./ros_ws:/data/workspace/ros_ws
+      - ./tmp/3rdParty:/root/.o3de/3rdParty
+      - /tmp/.X11-unix:/tmp/.X11-unix
+    environment:
+      - DISPLAY=${DISPLAY:-:0}
+    network_mode: host
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: all
+              capabilities: [gpu]
+    command: ["/bin/bash", "-c", "build_project.sh && /bin/bash"]
