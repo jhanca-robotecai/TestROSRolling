@@ -15,6 +15,10 @@
     "icon_path": "preview.png",
     "engine": "o3de-sdk",
     "external_subdirectories": [
+        "../o3de/o3de-extras/Gems/LevelGeoreferencing",
+        "../o3de/o3de-extras/Gems/ROS2",
+        "../o3de/o3de-extras/Gems/ROS2Controllers",
+        "../o3de/o3de-extras/Gems/ROS2Sensors",
         "Gem"
     ],
     "restricted": "TestROS2Rolling",
@@ -33,6 +37,9 @@
         "PhysX5",
         "PrimitiveAssets",
         "PrefabBuilder",
+        "ROS2>=4.0.0",
+        "ROS2Controllers",
+        "ROS2Sensors",
         "SaveData",
         "ScriptCanvasPhysics",
         "ScriptEvents",
