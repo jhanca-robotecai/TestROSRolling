@@ -1,0 +1,8 @@
+[submodule "ros_ws/src/simulation_interfaces"]
+	path = ros_ws/src/simulation_interfaces
+	url = git@github.com:ros-simulation/simulation_interfaces.git
+	branch = main
+[submodule "o3de/o3de-extras"]
+	path = o3de/o3de-extras
+	url = git@github.com:o3de/o3de-extras.git
+	branch = development
