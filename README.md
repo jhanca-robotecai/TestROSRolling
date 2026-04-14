@@ -24,8 +24,11 @@ curl -L https://o3debinaries.org/stabilization-26050/Latest/Linux/o3de_latest.de
 ## Quick Start
 
 ```bash
-# Build the Docker image
+# Build the Docker image (default: ROS 2 Rolling)
 docker compose build
+
+# To use a different ROS 2 distro (humble, jazzy):
+ROS_DISTRO=jazzy docker compose build
 
 # Run an interactive container
 docker compose run --rm simulation
@@ -37,11 +40,11 @@ Inside the container:
 # Source ROS 2 Rolling
 source /opt/ros/rolling/setup.bash
 
-# Build the ROS 2 workspace
+# Optional: build the ROS 2 workspace when testing SimulationInterfaces
 cd /workspace/ros_ws
 colcon build --symlink-install
 source install/setup.bash
 
 # Build the simulation
-/usr/local/bin/build_project.sh
+build_project.sh
 ```

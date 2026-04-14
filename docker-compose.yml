@@ -1,8 +1,11 @@
 services:
   simulation:
+    image: testrosrolling-simulation:${ROS_DISTRO:-rolling}
     build:
       context: .
       dockerfile: Docker/Dockerfile.O3DE
+      args:
+        ROS_DISTRO: ${ROS_DISTRO:-rolling}
     volumes:
       - ./Project:/data/workspace/Project
       - ./o3de:/data/workspace/o3de

@@ -4,7 +4,12 @@
 # SPDX-License-Identifier: Apache-2.0 OR MIT
 #
 
-FROM ros:rolling
+ARG ROS_DISTRO=rolling
+FROM ros:${ROS_DISTRO}
+
+# Re-declare ARG after FROM so it is available in the rest of the build
+ARG ROS_DISTRO
+ENV ROS_DISTRO=${ROS_DISTRO}
 
 ENV WORKSPACE=/data/workspace
 
@@ -45,13 +50,24 @@ RUN apt-get update \
     ninja-build \
     python3-pip \
     software-properties-common \
-    ros-rolling-ackermann-msgs \
-    ros-rolling-control-toolbox \
-    ros-rolling-xacro \
-    ros-rolling-vision-msgs \
-    ros-rolling-cyclonedds \
-    ros-rolling-rmw-cyclonedds-cpp \
-    ros-rolling-controller-manager
+    ros-${ROS_DISTRO}-ackermann-msgs \
+    ros-${ROS_DISTRO}-control-toolbox \
+    ros-${ROS_DISTRO}-xacro \
+    ros-${ROS_DISTRO}-vision-msgs \
+    ros-${ROS_DISTRO}-cyclonedds \
+    ros-${ROS_DISTRO}-rmw-cyclonedds-cpp \
+    ros-${ROS_DISTRO}-controller-manager
+
+# Ubuntu 22.04 (humble) ships CMake 3.22; upgrade to 3.28 via the Kitware APT repo
+RUN if [ "${ROS_DISTRO}" = "humble" ]; then \
+    curl -fsSL https://apt.kitware.com/keys/kitware-archive-latest.asc \
+        | gpg --dearmor - > /usr/share/keyrings/kitware-archive-keyring.gpg \
+    && echo 'deb [signed-by=/usr/share/keyrings/kitware-archive-keyring.gpg] https://apt.kitware.com/ubuntu/ jammy main' \
+        > /etc/apt/sources.list.d/kitware.list \
+    && apt-get update \
+    && apt-get install -y "cmake=3.28.*" "cmake-data=3.28.*" \
+    && rm -rf /var/lib/apt/lists/*; \
+    fi
 
 ENV RMW_IMPLEMENTATION=rmw_cyclonedds_cpp
 

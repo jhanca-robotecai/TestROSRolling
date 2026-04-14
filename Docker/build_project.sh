@@ -2,7 +2,7 @@
 # Build the TestROSRolling O3DE project using the development->build-all CMake preset chain.
 set -e
 
-source /opt/ros/rolling/setup.bash
+source /opt/ros/${ROS_DISTRO}/setup.bash
 
 PROJECT_PATH=/data/workspace/Project
 
