@@ -2,10 +2,5 @@
 [Cc]ache/
 [Uu]ser/
 [Uu]ser_test*/
-[Tt]mp/
 _savebackup/
-**/__pycache__
-CLAUDE.md
 CMakeUserPresets.json
-backtrace.log
-imgui.ini
