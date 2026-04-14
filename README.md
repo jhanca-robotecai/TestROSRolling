@@ -2,6 +2,8 @@
 
 A containerized test environment for running [O3DE](https://o3de.org/) simulation with [ROS 2 Rolling](https://docs.ros.org/en/rolling/) inside Docker.
 
+Note: the docker image uses the local folder to keep build data; the data from different containers (with different ROS 2 versions) might collide.
+
 ## Purpose
 
 This project provides a reproducible Docker-based setup to develop and validate ROS 2 Rolling integration with O3DE, using the [ROS 2 Gem](https://github.com/o3de/o3de-extras) from o3de-extras.
@@ -41,9 +43,8 @@ Inside the container:
 source /opt/ros/rolling/setup.bash
 
 # Optional: build the ROS 2 workspace when testing SimulationInterfaces
-cd /workspace/ros_ws
-colcon build --symlink-install
-source install/setup.bash
+# Use dot-source so the install overlay stays active in the current shell
+. build_ros_ws.sh
 
 # Build the simulation
 build_project.sh

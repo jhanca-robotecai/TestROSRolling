@@ -83,9 +83,10 @@ RUN apt-get update \
 RUN /opt/O3DE/26.05/python/get_python.sh \
     && /opt/O3DE/26.05/scripts/o3de.sh register --this-engine
 
-# Install build script
+# Install build scripts
 COPY Docker/build_project.sh /usr/local/bin/build_project.sh
-RUN chmod +x /usr/local/bin/build_project.sh
+COPY Docker/build_ros_ws.sh /usr/local/bin/build_ros_ws.sh
+RUN chmod +x /usr/local/bin/build_project.sh /usr/local/bin/build_ros_ws.sh
 
 ENV NVIDIA_VISIBLE_DEVICES=all
 ENV NVIDIA_DRIVER_CAPABILITIES=all
