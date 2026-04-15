@@ -22,4 +22,5 @@ services:
             - driver: nvidia
               count: all
               capabilities: [gpu]
-    command: ["/bin/bash", "-c", "build_project.sh && /bin/bash"]
+    stdin_open: true
+    tty: true

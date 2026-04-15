@@ -19,6 +19,7 @@
         "../o3de/o3de-extras/Gems/ROS2",
         "../o3de/o3de-extras/Gems/ROS2Controllers",
         "../o3de/o3de-extras/Gems/ROS2Sensors",
+        "../o3de/o3de-extras/Gems/SimulationInterfaces",
         "Gem"
     ],
     "restricted": "TestROS2Rolling",
@@ -43,6 +44,7 @@
         "SaveData",
         "ScriptCanvasPhysics",
         "ScriptEvents",
+        "SimulationInterfaces",
         "StartingPointInput",
         "TextureAtlas",
         "WhiteBox"
