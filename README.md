@@ -2,7 +2,7 @@
 
 A containerized test environment for running [O3DE](https://o3de.org/) simulation with [ROS 2 Rolling](https://docs.ros.org/en/rolling/) inside Docker.
 
-Note: the docker image uses the local folder to keep build data; the data from different containers (with different ROS 2 versions) might collide.
+Note: the docker image uses the local folder to keep build data; the data from different containers (with different ROS 2 versions) might collide. It is recommended to remove _build_, _Cache_ and _user_ folders before building the code using different ROS 2 image.
 
 ## Purpose
 
@@ -48,4 +48,22 @@ source /opt/ros/rolling/setup.bash
 
 # Build the simulation
 build_project.sh
+```
+
+### Useful commands
+
+```bash
+# build and run container for certain ROS 2 distro
+ROS_DISTRO=rolling docker compose build
+ROS_DISTRO=rolling docker compose run --rm simulation
+
+# build and source simulation_interfaces ROS 2 package
+. /usr/local/bin/build_ros_ws.sh
+
+# build project (default configuration)
+build_project.sh
+
+# register Gems (needed for tests) and run tests
+/opt/O3DE/26.05/scripts/o3de.sh register --all-gems-path /data/workspace/o3de/o3de-extras/Gems/
+ctest --test-dir /data/workspace/Project/build/dev/ -I 1,8
 ```
