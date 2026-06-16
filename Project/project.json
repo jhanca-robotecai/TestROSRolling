@@ -19,6 +19,7 @@
         "../o3de/o3de-extras/Gems/ROS2",
         "../o3de/o3de-extras/Gems/ROS2Controllers",
         "../o3de/o3de-extras/Gems/ROS2Sensors",
+        "../o3de/o3de-extras/Gems/ROS2RobotImporter",
         "../o3de/o3de-extras/Gems/SimulationInterfaces",
         "Gem"
     ],
@@ -41,6 +42,7 @@
         "ROS2>=4.0.0",
         "ROS2Controllers",
         "ROS2Sensors",
+        "ROS2RobotImporter",
         "SaveData",
         "ScriptCanvasPhysics",
         "ScriptEvents",

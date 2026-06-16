@@ -4,7 +4,10 @@ set -e
 
 source /opt/ros/${ROS_DISTRO}/setup.bash
 
-cd /data/workspace/ros_ws
+pushd /data/workspace/ros_ws
+
+echo "=== Cleaning previous ros_ws build ==="
+rm -rf build install log
 
 echo "=== Building ROS 2 workspace ==="
 colcon build --symlink-install
@@ -12,4 +15,5 @@ colcon build --symlink-install
 echo "=== Sourcing install overlay ==="
 source install/setup.bash
 
+popd
 echo "=== ros_ws build complete ==="

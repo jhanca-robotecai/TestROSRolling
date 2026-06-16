@@ -4,7 +4,7 @@
 # SPDX-License-Identifier: Apache-2.0 OR MIT
 #
 
-ARG ROS_DISTRO=rolling
+ARG ROS_DISTRO=lyrical
 FROM ros:${ROS_DISTRO}
 
 # Re-declare ARG after FROM so it is available in the rest of the build
@@ -19,12 +19,14 @@ ENV LANG=en_US.UTF-8
 
 # Setup time zone and locale data (necessary for SSL and HTTPS packages)
 RUN apt-get update \
-    && DEBIAN_FRONTEND="noninteractive" apt-get -y install tzdata locales keyboard-configuration curl \
+    && DEBIAN_FRONTEND="noninteractive" apt-get -y install tzdata locales keyboard-configuration curl gnupg \
     && sed -i -e 's/# en_US.UTF-8 UTF-8/en_US.UTF-8 UTF-8/' /etc/locale.gen \
     && dpkg-reconfigure --frontend=noninteractive locales \
     && update-locale LANG=en_US.UTF-8 \
-    && sh -c 'echo "deb [arch=amd64,arm64] http://repo.ros2.org/ubuntu/main `lsb_release -cs` main" > /etc/apt/sources.list.d/ros2-latest.list' \
-    && curl -s https://raw.githubusercontent.com/ros/rosdistro/master/ros.asc | sudo apt-key add - \
+    && curl -sSL https://raw.githubusercontent.com/ros/rosdistro/master/ros.asc \
+        | gpg --dearmor -o /usr/share/keyrings/ros-archive-keyring.gpg \
+    && echo "deb [arch=amd64,arm64 signed-by=/usr/share/keyrings/ros-archive-keyring.gpg] http://repo.ros2.org/ubuntu/main $(lsb_release -cs) main" \
+        > /etc/apt/sources.list.d/ros2-latest.list \
     && rm -rf /var/lib/apt/lists/*
 
 # Install the required ubuntu packages
@@ -38,7 +40,6 @@ RUN apt-get update \
     libglu1-mesa-dev \
     libxcb-xinerama0 \
     libfontconfig1-dev \
-    libnvidia-gl-470 \
     libxcb-xkb-dev \
     libxkbcommon-x11-dev \
     libxkbcommon-dev \
@@ -48,6 +49,9 @@ RUN apt-get update \
     libpcre2-16-0 \
     libunwind-dev \
     ninja-build \
+    libpython3-dev \
+    python3-dev \
+    python3-numpy \
     python3-pip \
     software-properties-common \
     ros-${ROS_DISTRO}-ackermann-msgs \
@@ -86,8 +90,10 @@ RUN /opt/O3DE/26.05/python/get_python.sh \
 # Install build scripts and entrypoint
 COPY Docker/build_project.sh /usr/local/bin/build_project.sh
 COPY Docker/build_ros_ws.sh /usr/local/bin/build_ros_ws.sh
+COPY Docker/source_ros_ws.sh /usr/local/bin/source_ros_ws.sh
 COPY Docker/entrypoint.sh /usr/local/bin/entrypoint.sh
-RUN chmod +x /usr/local/bin/build_project.sh /usr/local/bin/build_ros_ws.sh /usr/local/bin/entrypoint.sh
+RUN chmod +x /usr/local/bin/build_project.sh /usr/local/bin/build_ros_ws.sh \
+             /usr/local/bin/source_ros_ws.sh /usr/local/bin/entrypoint.sh
 
 ENV NVIDIA_VISIBLE_DEVICES=all
 ENV NVIDIA_DRIVER_CAPABILITIES=all
